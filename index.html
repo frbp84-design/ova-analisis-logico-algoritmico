@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OVA · Fundamentos del Análisis Lógico y Algorítmico</title>
+<style>
+  :root{
+    --verde:#6C8A2E;
+    --verde-oscuro:#4F6322;
+    --verde-mas-oscuro:#3A4A19;
+    --verde-claro:#8FA952;
+    --oliva-fill:#EDF2E4;
+    --crema:#F7F8F3;
+    --tinta:#2E3620;
+    --tinta-media:#5B6350;
+    --blanco:#FFFFFF;
+    --rojo:#A8381F;
+    --rojo-fill:#F7E6E1;
+    --verde-ok-fill:#E3EBD4;
+    --dorado:#B4863A;
+    --sombra:rgba(58,74,25,0.16);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:var(--crema);
+    color:var(--tinta);
+    line-height:1.55;
+  }
+  header.banner{
+    background:linear-gradient(135deg, var(--verde-mas-oscuro), var(--verde) 60%, var(--verde-claro));
+    color:#fff;
+    padding:34px 20px 28px;
+    text-align:center;
+    box-shadow:0 4px 14px var(--sombra);
+  }
+  header.banner h1{
+    margin:0 0 8px;
+    font-size:1.65rem;
+    letter-spacing:.2px;
+    text-shadow:0 1px 4px rgba(0,0,0,.5);
+  }
+  header.banner p{
+    margin:0;
+    font-size:.95rem;
+    color:#fff;
+    text-shadow:0 1px 3px rgba(0,0,0,.5);
+  }
+  nav.nav-principal{
+    position:sticky;
+    top:0;
+    z-index:50;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
+    background:#fff;
+    padding:10px;
+    box-shadow:0 2px 8px var(--sombra);
+  }
+  .nav-btn{
+    border:1px solid var(--verde);
+    background:#fff;
+    color:var(--verde-oscuro);
+    padding:9px 14px;
+    border-radius:20px;
+    font-size:.85rem;
+    cursor:pointer;
+    font-weight:600;
+    transition:all .15s ease;
+  }
+  .nav-btn:hover{background:var(--oliva-fill);}
+  .nav-btn.activo{
+    background:var(--verde);
+    color:#fff;
+    border-color:var(--verde);
+  }
+  main.contenido{
+    max-width:1080px;
+    margin:0 auto;
+    padding:26px 20px 60px;
+  }
+  .seccion{display:none;}
+  .seccion.activa{display:block; animation:aparecer .25s ease;}
+  @keyframes aparecer{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  h2{
+    color:var(--verde-mas-oscuro);
+    border-bottom:3px solid var(--verde);
+    padding-bottom:8px;
+    font-size:1.35rem;
+  }
+  h3{color:var(--verde-oscuro); font-size:1.1rem; margin-top:26px;}
+  h4{color:var(--verde-oscuro); margin:0 0 6px;}
+  p{color:var(--tinta-media);}
+  strong{color:var(--tinta);}
+  .callout{
+    background:var(--oliva-fill);
+    border-left:4px solid var(--verde);
+    border-radius:6px;
+    padding:14px 16px;
+    margin:16px 0;
+    color:var(--tinta);
+  }
+  .callout-final{
+    background:var(--verde-ok-fill);
+    border-left:4px solid var(--verde-oscuro);
+    font-weight:600;
+  }
+  .flujo-intro{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin:26px 0;
+  }
+  .flujo-caja{
+    background:#fff;
+    border:2px solid var(--verde);
+    color:var(--verde-mas-oscuro);
+    font-weight:700;
+    padding:14px 18px;
+    border-radius:10px;
+    box-shadow:0 2px 6px var(--sombra);
+    font-size:.9rem;
+  }
+  .flujo-flecha{font-size:1.4rem; color:var(--verde); font-weight:700;}
+
+  .subnav{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin:18px 0 10px;
+    border-bottom:1px solid #DDE3CF;
+    padding-bottom:10px;
+  }
+  .subnav-btn{
+    border:none;
+    background:var(--oliva-fill);
+    color:var(--verde-oscuro);
+    padding:8px 14px;
+    border-radius:16px;
+    font-size:.82rem;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .subnav-btn.activo{background:var(--verde-oscuro); color:#fff;}
+  .subseccion{display:none;}
+  .subseccion.activa{display:block;}
+
+  table{border-collapse:collapse; width:100%; margin:14px 0;}
+  th, td{border:1px solid #D6DCC7; padding:9px 10px; text-align:center; font-size:.9rem;}
+  th{background:var(--verde-oscuro); color:#fff;}
+  .tabla-verdad td:first-child, .tabla-verdad td:nth-child(2){font-weight:700; background:#FAFBF6;}
+  .celda-respuesta{background:#fff;}
+  .btn-vf{
+    border:1.5px solid var(--verde);
+    background:#fff;
+    color:var(--verde-oscuro);
+    width:36px;
+    height:32px;
+    border-radius:6px;
+    font-weight:700;
+    cursor:pointer;
+    margin:0 3px;
+  }
+  .btn-vf.activo{background:var(--verde); color:#fff;}
+  tr.fila-correcta{background:var(--verde-ok-fill);}
+  tr.fila-incorrecta{background:var(--rojo-fill);}
+
+  .logica-controles{margin:14px 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .logica-controles select{
+    padding:8px 10px; border-radius:6px; border:1.5px solid var(--verde); font-size:.9rem; color:var(--tinta);
+  }
+  .logica-acciones, .trazador-controles, .quiz-acciones{
+    display:flex; gap:10px; flex-wrap:wrap; margin:14px 0;
+  }
+  button.accion, .logica-acciones button, .trazador-controles button, .quiz-acciones button{
+    background:var(--verde);
+    color:#fff;
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    font-size:.85rem;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .logica-acciones button:hover, .trazador-controles button:hover, .quiz-acciones button:hover{background:var(--verde-oscuro);}
+  #logica-resultado{font-weight:600; color:var(--verde-mas-oscuro); min-height:20px;}
+
+  .pseudocodigo{
+    background:#1F2A13;
+    color:#E7EFD8;
+    font-family:'Consolas','Courier New',monospace;
+    padding:16px 18px;
+    border-radius:10px;
+    font-size:.88rem;
+    margin:16px 0;
+    overflow-x:auto;
+  }
+  .pseudocodigo .linea{padding:3px 6px; border-radius:4px; white-space:pre;}
+  .pseudocodigo .linea.linea-activa{background:var(--verde); color:#fff; font-weight:700;}
+  .trazador-controles input[type="text"]{
+    padding:8px 10px; border-radius:6px; border:1.5px solid var(--verde); font-size:.9rem; min-width:220px; flex:1;
+  }
+  .trazador-controles label{align-self:center; font-size:.85rem; color:var(--tinta-media);}
+
+  .df-container{display:grid; grid-template-columns:1fr 1fr; gap:26px; margin:18px 0;}
+  .df-col h4{text-align:center;}
+  .df-card{
+    background:#fff;
+    border:2px solid var(--verde);
+    border-radius:10px;
+    padding:10px;
+    margin-bottom:12px;
+    cursor:pointer;
+    transition:all .15s ease;
+    text-align:center;
+  }
+  .df-card svg{width:100%; max-width:160px; height:auto;}
+  .df-card.seleccionado{border-color:var(--dorado); box-shadow:0 0 0 3px rgba(180,134,58,.3);}
+  .df-card.emparejado{opacity:.55; cursor:default; border-color:var(--verde-oscuro);}
+  .df-card.error{border-color:var(--rojo); box-shadow:0 0 0 3px rgba(168,56,31,.25);}
+  .df-meaning{
+    background:var(--oliva-fill);
+    border:2px solid transparent;
+    border-radius:8px;
+    padding:14px;
+    margin-bottom:12px;
+    cursor:pointer;
+    font-size:.88rem;
+    transition:all .15s ease;
+  }
+  .df-meaning.emparejado{background:var(--verde-ok-fill); border-color:var(--verde-oscuro); opacity:.7; cursor:default;}
+  .df-meaning.error{background:var(--rojo-fill); border-color:var(--rojo);}
+  #df-progreso{font-weight:700; color:var(--verde-mas-oscuro); text-align:center; margin-top:6px;}
+
+  .grid-tarjetas{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:16px; margin:18px 0;}
+  .tarjeta{
+    background:#fff;
+    border:1px solid #DDE3CF;
+    border-left:5px solid var(--verde);
+    border-radius:8px;
+    padding:16px 18px;
+    box-shadow:0 2px 6px var(--sombra);
+  }
+  .tarjeta p{font-size:.88rem; margin:4px 0 0;}
+
+  #quiz-progreso{font-weight:700; color:var(--verde-mas-oscuro); margin-bottom:10px;}
+  #quiz-pregunta{font-size:1.02rem; font-weight:600; color:var(--tinta);}
+  #quiz-opciones{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0;}
+  .opcion-quiz{
+    text-align:left;
+    background:#fff;
+    border:1.5px solid var(--verde);
+    color:var(--tinta);
+    padding:12px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:.88rem;
+  }
+  .opcion-quiz:hover{background:var(--oliva-fill);}
+  .opcion-quiz:disabled{cursor:default;}
+  .opcion-correcta{background:var(--verde-ok-fill) !important; border-color:var(--verde-oscuro) !important; font-weight:700;}
+  .opcion-incorrecta{background:var(--rojo-fill) !important; border-color:var(--rojo) !important;}
+  .feedback-correcto{color:var(--verde-mas-oscuro); font-weight:600;}
+  .feedback-incorrecto{color:var(--rojo); font-weight:600;}
+  #btn-siguiente-pregunta:disabled{background:#B7C296; cursor:not-allowed;}
+
+  footer{
+    text-align:center;
+    font-size:.78rem;
+    color:var(--tinta-media);
+    padding:18px;
+    border-top:1px solid #DDE3CF;
+  }
+
+  @media (max-width:680px){
+    header.banner h1{font-size:1.25rem;}
+    .nav-btn{font-size:.76rem; padding:7px 10px;}
+    .df-container{grid-template-columns:1fr;}
+    #quiz-opciones{grid-template-columns:1fr;}
+    .flujo-intro{flex-direction:column;}
+    .flujo-flecha{transform:rotate(90deg);}
+    table, th, td{font-size:.78rem;}
+  }
+</style>
+</head>
+<body>
+
+<header class="banner">
+  <h1>Fundamentos del Análisis Lógico y Algorítmico</h1>
+  <p>Universidad de Córdoba · Ingeniería de Sistemas · Objeto Virtual de Aprendizaje (OVA)</p>
+</header>
+
+<nav class="nav-principal">
+  <button class="nav-btn activo" data-target="introduccion" onclick="mostrarSeccion('introduccion')">1. Introducción</button>
+  <button class="nav-btn" data-target="componentes" onclick="mostrarSeccion('componentes')">2. Componentes Clave</button>
+  <button class="nav-btn" data-target="aplicaciones" onclick="mostrarSeccion('aplicaciones')">3. Aplicaciones Prácticas</button>
+  <button class="nav-btn" data-target="impacto" onclick="mostrarSeccion('impacto')">4. Impacto en la Innovación</button>
+  <button class="nav-btn" data-target="practica" onclick="mostrarSeccion('practica')">5. Práctica</button>
+</nav>
+
+<main class="contenido">
+
+  <!-- 1. INTRODUCCION -->
+  <section id="introduccion" class="seccion activa">
+    <h2>1. Introducción al Análisis Lógico y Algorítmico</h2>
+    <p>El <strong>análisis lógico y algorítmico</strong> es la base del pensamiento computacional: es la capacidad de descomponer un problema en partes más simples, identificar relaciones de causa y efecto, y construir una secuencia ordenada de pasos —un <strong>algoritmo</strong>— que conduzca a una solución verificable.</p>
+    <p>En ingeniería de sistemas, antes de escribir una sola línea de código es necesario <strong>pensar de forma lógica</strong>: ¿qué datos entran?, ¿qué condiciones deben cumplirse?, ¿en qué orden deben ejecutarse las acciones?, ¿qué resultado se espera obtener? Responder estas preguntas con rigor es, precisamente, lo que distingue a un buen analista de sistemas.</p>
+
+    <div class="flujo-intro">
+      <div class="flujo-caja">Problema</div>
+      <div class="flujo-flecha">→</div>
+      <div class="flujo-caja">Análisis Lógico</div>
+      <div class="flujo-flecha">→</div>
+      <div class="flujo-caja">Algoritmo</div>
+      <div class="flujo-flecha">→</div>
+      <div class="flujo-caja">Solución</div>
+    </div>
+
+    <div class="callout">
+      <strong>En pocas palabras:</strong> la lógica garantiza que el razonamiento sea válido, y el algoritmo garantiza que ese razonamiento se pueda ejecutar, paso a paso, de manera repetible por una persona o por una máquina.
+    </div>
+
+    <p>Este objeto virtual de aprendizaje te permitirá explorar, de forma interactiva, los tres pilares de este tema: la <strong>lógica proposicional</strong>, los <strong>algoritmos y el pseudocódigo</strong>, y los <strong>diagramas de flujo</strong>; además de revisar sus aplicaciones prácticas y su impacto en la innovación y la eficiencia. Usa el menú superior para navegar entre secciones.</p>
+  </section>
+
+  <!-- 2. COMPONENTES CLAVE -->
+  <section id="componentes" class="seccion">
+    <h2>2. Componentes Clave del Análisis Algorítmico</h2>
+    <p>El análisis algorítmico se apoya en tres componentes fundamentales que trabajan de manera conjunta: la <strong>lógica proposicional</strong> (para validar razonamientos), las <strong>estructuras de control y el pseudocódigo</strong> (para ordenar instrucciones) y los <strong>diagramas de flujo</strong> (para representarlas visualmente). Explora cada uno con los ejercicios interactivos a continuación.</p>
+
+    <div class="subnav">
+      <button class="subnav-btn activo" data-sub="logica" onclick="mostrarSubseccion('logica')">Lógica Proposicional</button>
+      <button class="subnav-btn" data-sub="algoritmos" onclick="mostrarSubseccion('algoritmos')">Algoritmos y Pseudocódigo</button>
+      <button class="subnav-btn" data-sub="diagramas" onclick="mostrarSubseccion('diagramas')">Diagramas de Flujo</button>
+    </div>
+
+    <!-- 2.1 LOGICA PROPOSICIONAL -->
+    <div id="sub-logica" class="subseccion activa">
+      <h3>Lógica Proposicional y Tablas de Verdad</h3>
+      <p>Una <strong>proposición</strong> es un enunciado que puede ser verdadero (V) o falso (F), pero nunca ambos a la vez. Los <strong>operadores lógicos</strong> permiten combinar proposiciones simples para formar proposiciones compuestas. Elige un operador, completa la tabla de verdad marcando V o F en cada fila y verifica tus respuestas.</p>
+
+      <div class="logica-controles">
+        <label for="selector-operador">Operador lógico:</label>
+        <select id="selector-operador" onchange="cambiarOperador(false)">
+          <option value="NOT">Negación (¬p)</option>
+          <option value="AND">Conjunción (p ∧ q)</option>
+          <option value="OR">Disyunción (p ∨ q)</option>
+          <option value="COND">Condicional (p → q)</option>
+          <option value="BICOND">Bicondicional (p ↔ q)</option>
+          <option value="XOR">Disyunción exclusiva (p ⊕ q)</option>
+        </select>
+      </div>
+
+      <div id="logica-definicion" class="callout"></div>
+      <table id="tabla-logica" class="tabla-verdad"></table>
+
+      <div class="logica-acciones">
+        <button onclick="verificarTablaLogica()">Verificar tabla</button>
+        <button onclick="mostrarRespuestasLogica()">Mostrar respuestas</button>
+        <button onclick="cambiarOperador(true)">Otra tabla</button>
+      </div>
+      <p id="logica-resultado"></p>
+    </div>
+
+    <!-- 2.2 ALGORITMOS Y PSEUDOCODIGO -->
+    <div id="sub-algoritmos" class="subseccion">
+      <h3>Algoritmos y Pseudocódigo: Trazador Paso a Paso</h3>
+      <p>Un <strong>algoritmo</strong> se expresa frecuentemente en <strong>pseudocódigo</strong>: una descripción de los pasos en lenguaje cercano al natural, usando estructuras de control como la <strong>secuencia</strong>, la <strong>selección</strong> (Si... entonces) y la <strong>repetición</strong> (Para / Mientras). Observa cómo se ejecuta, paso a paso, un algoritmo que encuentra el número mayor dentro de una lista.</p>
+
+      <div class="pseudocodigo">
+<div class="linea" id="pc-inicio">Algoritmo EncontrarMayor</div>
+<div class="linea">Inicio</div>
+<div class="linea">&nbsp;&nbsp;Leer lista de números</div>
+<div class="linea" id="linea-mayor-init">&nbsp;&nbsp;mayor &larr; lista[0]</div>
+<div class="linea">&nbsp;&nbsp;Para i desde 1 hasta longitud(lista) - 1 hacer</div>
+<div class="linea" id="linea-leer-n">&nbsp;&nbsp;&nbsp;&nbsp;n &larr; lista[i]</div>
+<div class="linea" id="linea-comparar">&nbsp;&nbsp;&nbsp;&nbsp;Si n &gt; mayor entonces</div>
+<div class="linea" id="linea-actualizar">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mayor &larr; n</div>
+<div class="linea">&nbsp;&nbsp;&nbsp;&nbsp;Fin Si</div>
+<div class="linea">&nbsp;&nbsp;Fin Para</div>
+<div class="linea" id="linea-final">&nbsp;&nbsp;Escribir mayor</div>
+<div class="linea">Fin</div>
+      </div>
+
+      <div class="trazador-controles">
+        <label for="input-lista">Lista de números (separados por comas):</label>
+        <input type="text" id="input-lista" value="4, 9, 2, 7, 5" />
+        <button onclick="iniciarTrazado()">Iniciar trazado</button>
+        <button onclick="siguientePaso()">Siguiente paso ▶</button>
+        <button onclick="reiniciarTrazado()">Reiniciar</button>
+      </div>
+
+      <div id="estado-actual" class="callout">Pulsa "Iniciar trazado" para comenzar.</div>
+
+      <table class="tabla-trazado">
+        <thead><tr><th>i</th><th>n</th><th>mayor (antes)</th><th>¿n &gt; mayor?</th><th>mayor (después)</th></tr></thead>
+        <tbody id="tabla-trazado-body"></tbody>
+      </table>
+    </div>
+
+    <!-- 2.3 DIAGRAMAS DE FLUJO -->
+    <div id="sub-diagramas" class="subseccion">
+      <h3>Diagramas de Flujo: Relaciona Cada Símbolo</h3>
+      <p>Los <strong>diagramas de flujo</strong> representan gráficamente los pasos de un algoritmo mediante símbolos estandarizados. Haz clic en un símbolo y luego en el significado que le corresponde.</p>
+
+      <div class="df-container">
+        <div class="df-col">
+          <h4>Símbolos</h4>
+          <div class="df-card" id="simbolo-s1" onclick="seleccionarSimbolo('s1')">
+            <svg viewBox="0 0 120 70"><ellipse cx="60" cy="35" rx="52" ry="26" fill="#EDF2E4" stroke="#4F6322" stroke-width="3"/></svg>
+          </div>
+          <div class="df-card" id="simbolo-s2" onclick="seleccionarSimbolo('s2')">
+            <svg viewBox="0 0 120 70"><rect x="12" y="12" width="96" height="46" fill="#EDF2E4" stroke="#4F6322" stroke-width="3"/></svg>
+          </div>
+          <div class="df-card" id="simbolo-s3" onclick="seleccionarSimbolo('s3')">
+            <svg viewBox="0 0 120 70"><polygon points="60,6 114,35 60,64 6,35" fill="#EDF2E4" stroke="#4F6322" stroke-width="3"/></svg>
+          </div>
+          <div class="df-card" id="simbolo-s4" onclick="seleccionarSimbolo('s4')">
+            <svg viewBox="0 0 120 70"><polygon points="30,12 114,12 90,58 6,58" fill="#EDF2E4" stroke="#4F6322" stroke-width="3"/></svg>
+          </div>
+          <div class="df-card" id="simbolo-s5" onclick="seleccionarSimbolo('s5')">
+            <svg viewBox="0 0 120 70"><line x1="10" y1="35" x2="95" y2="35" stroke="#4F6322" stroke-width="4"/><polygon points="95,22 115,35 95,48" fill="#4F6322"/></svg>
+          </div>
+        </div>
+        <div class="df-col">
+          <h4>Significados</h4>
+          <div class="df-meaning" data-for="s3" onclick="intentarEmparejar(this,'s3')">Decisión: evalúa una condición y deriva el flujo en verdadero o falso.</div>
+          <div class="df-meaning" data-for="s1" onclick="intentarEmparejar(this,'s1')">Inicio / Fin: marca el comienzo o la terminación del algoritmo.</div>
+          <div class="df-meaning" data-for="s4" onclick="intentarEmparejar(this,'s4')">Entrada / Salida: representa la lectura o escritura de datos.</div>
+          <div class="df-meaning" data-for="s2" onclick="intentarEmparejar(this,'s2')">Proceso: representa una instrucción, cálculo o asignación.</div>
+          <div class="df-meaning" data-for="s5" onclick="intentarEmparejar(this,'s5')">Flecha de flujo: indica la secuencia y dirección de ejecución.</div>
+        </div>
+      </div>
+
+      <p id="df-progreso">Emparejados: 0 de 5</p>
+      <div id="df-mensaje-final" class="callout callout-final" style="display:none;">¡Completado! Relacionaste correctamente los 5 símbolos del diagrama de flujo.</div>
+      <div class="logica-acciones">
+        <button onclick="reiniciarDiagramas()">Reiniciar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. APLICACIONES PRACTICAS -->
+  <section id="aplicaciones" class="seccion">
+    <h2>3. Aplicaciones Prácticas del Análisis Lógico</h2>
+    <p>El análisis lógico y algorítmico no es un ejercicio puramente teórico: es la herramienta de trabajo diaria de cualquier profesional de sistemas. Algunas de sus aplicaciones más relevantes son:</p>
+    <div class="grid-tarjetas">
+      <div class="tarjeta">
+        <h4>Desarrollo de software</h4>
+        <p>Todo programa es, en esencia, un algoritmo traducido a un lenguaje de programación; la calidad del análisis lógico previo determina la calidad del software resultante.</p>
+      </div>
+      <div class="tarjeta">
+        <h4>Bases de datos y consultas</h4>
+        <p>Diseñar consultas (SQL), filtros y relaciones entre tablas requiere lógica proposicional para combinar condiciones con AND, OR y NOT.</p>
+      </div>
+      <div class="tarjeta">
+        <h4>Inteligencia artificial</h4>
+        <p>Los sistemas expertos y los modelos de decisión se construyen sobre reglas lógicas y algoritmos que procesan datos para "razonar" sobre un problema.</p>
+      </div>
+      <div class="tarjeta">
+        <h4>Automatización de procesos</h4>
+        <p>La automatización industrial y administrativa traduce procesos manuales en secuencias algorítmicas ejecutadas por software o maquinaria.</p>
+      </div>
+      <div class="tarjeta">
+        <h4>Depuración y optimización</h4>
+        <p>Encontrar y corregir errores (debugging), y mejorar el rendimiento de un sistema, exige analizar lógicamente el comportamiento del algoritmo.</p>
+      </div>
+      <div class="tarjeta">
+        <h4>Control y toma de decisiones</h4>
+        <p>Desde semáforos inteligentes hasta sistemas de control industrial, las decisiones automáticas dependen de condiciones lógicas evaluadas en tiempo real.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. IMPACTO EN LA INNOVACION -->
+  <section id="impacto" class="seccion">
+    <h2>4. Impacto en la Innovación y la Eficiencia</h2>
+    <p>Un algoritmo bien diseñado no solo resuelve un problema: lo resuelve <strong>usando menos tiempo, menos recursos y con mayor confiabilidad</strong>. A esta propiedad se le llama <strong>eficiencia algorítmica</strong>, y suele medirse con la notación <strong>Big-O</strong>, que estima cómo crece el esfuerzo de un algoritmo a medida que crecen los datos.</p>
+
+    <table class="tabla-comparacion">
+      <thead><tr><th>Criterio</th><th>Búsqueda secuencial</th><th>Búsqueda binaria (lista ordenada)</th></tr></thead>
+      <tbody>
+        <tr><td>Pasos en el peor caso (1.000.000 de datos)</td><td>hasta 1.000.000</td><td>≈ 20</td></tr>
+        <tr><td>¿Requiere datos ordenados?</td><td>No</td><td>Sí</td></tr>
+        <tr><td>Complejidad (notación Big-O)</td><td>O(n)</td><td>O(log n)</td></tr>
+      </tbody>
+    </table>
+
+    <p>Esta diferencia, aparentemente técnica, es la que permite que una aplicación responda en milisegundos en lugar de minutos. Por eso el análisis lógico y algorítmico es un motor directo de innovación:</p>
+
+    <div class="grid-tarjetas">
+      <div class="tarjeta">
+        <h4>Eficiencia operativa</h4>
+        <p>Algoritmos más eficientes reducen tiempos de procesamiento, consumo energético en centros de datos y costos de infraestructura.</p>
+      </div>
+      <div class="tarjeta">
+        <h4>Innovación tecnológica</h4>
+        <p>Avances como la inteligencia artificial, el Internet de las Cosas (IoT) y el Big Data dependen de algoritmos capaces de procesar enormes volúmenes de información.</p>
+      </div>
+      <div class="tarjeta">
+        <h4>Mejor toma de decisiones</h4>
+        <p>Modelos lógicos y algorítmicos permiten anticipar escenarios, optimizar recursos y automatizar decisiones complejas con mayor precisión que el análisis manual.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PRACTICA -->
+  <section id="practica" class="seccion">
+    <h2>5. Práctica: Pon a Prueba lo Aprendido</h2>
+    <p>Responde las siguientes preguntas de selección múltiple. Recibirás retroalimentación inmediata después de cada respuesta.</p>
+
+    <div id="quiz-progreso">Pregunta 1 de 12 — Puntaje: 0</div>
+    <div id="quiz-pregunta" class="callout"></div>
+    <div id="quiz-opciones"></div>
+    <p id="quiz-feedback"></p>
+
+    <div class="quiz-acciones">
+      <button id="btn-siguiente-pregunta" onclick="siguientePregunta()" disabled>Siguiente pregunta ▶</button>
+      <button onclick="iniciarPractica()">Reiniciar práctica</button>
+    </div>
+
+    <div id="quiz-final" class="callout callout-final" style="display:none;"></div>
+  </section>
+
+</main>
+
+<footer>
+  Universidad de Córdoba · Ingeniería de Sistemas · OVA — Fundamentos del Análisis Lógico y Algorítmico
+</footer>
+
+<script>
+/* ============ NAVEGACION PRINCIPAL ============ */
+function mostrarSeccion(id){
+  document.querySelectorAll('.seccion').forEach(function(s){ s.classList.remove('activa'); });
+  document.getElementById(id).classList.add('activa');
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('activo'); });
+  document.querySelector('.nav-btn[data-target="' + id + '"]').classList.add('activo');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function mostrarSubseccion(id){
+  document.querySelectorAll('.subseccion').forEach(function(s){ s.classList.remove('activa'); });
+  document.getElementById('sub-' + id).classList.add('activa');
+  document.querySelectorAll('.subnav-btn').forEach(function(b){ b.classList.remove('activo'); });
+  document.querySelector('.subnav-btn[data-sub="' + id + '"]').classList.add('activo');
+}
+
+/* ============ 2.1 LOGICA PROPOSICIONAL ============ */
+var operadoresLogicos = {
+  NOT:   { nombre:'Negación (¬p)', descripcion:'Invierte el valor de verdad de la proposición: si p es verdadera, ¬p es falsa, y viceversa.', unario:true,  evaluar:function(p){ return !p; } },
+  AND:   { nombre:'Conjunción (p ∧ q)', descripcion:'Es verdadera únicamente cuando ambas proposiciones, p y q, son verdaderas al mismo tiempo.', unario:false, evaluar:function(p,q){ return p && q; } },
+  OR:    { nombre:'Disyunción (p ∨ q)', descripcion:'Es verdadera cuando al menos una de las dos proposiciones es verdadera; solo es falsa si ambas son falsas.', unario:false, evaluar:function(p,q){ return p || q; } },
+  COND:  { nombre:'Condicional (p → q)', descripcion:'Se lee "si p entonces q". Es falsa únicamente cuando p es verdadera y q es falsa; en cualquier otro caso es verdadera.', unario:false, evaluar:function(p,q){ return (!p) || q; } },
+  BICOND:{ nombre:'Bicondicional (p ↔ q)', descripcion:'Se lee "p si y solo si q". Es verdadera cuando p y q tienen el mismo valor de verdad.', unario:false, evaluar:function(p,q){ return p === q; } },
+  XOR:   { nombre:'Disyunción exclusiva (p ⊕ q)', descripcion:'Es verdadera cuando p y q tienen valores de verdad distintos (una verdadera y la otra falsa).', unario:false, evaluar:function(p,q){ return p !== q; } }
+};
+
+var respuestasUsuarioLogica = [];
+var filasLogicaActuales = [];
+
+function cambiarOperador(aleatorio){
+  var select = document.getElementById('selector-operador');
+  if(aleatorio){
+    var claves = Object.keys(operadoresLogicos);
+    var nueva = claves[Math.floor(Math.random()*claves.length)];
+    var intentos = 0;
+    while(nueva === select.value && intentos < 10){
+      nueva = claves[Math.floor(Math.random()*claves.length)];
+      intentos++;
+    }
+    select.value = nueva;
+  }
+  renderTablaLogica(select.value);
+}
+
+function renderTablaLogica(clave){
+  var op = operadoresLogicos[clave];
+  document.getElementById('logica-definicion').innerHTML = '<strong>' + op.nombre + ':</strong> ' + op.descripcion;
+
+  var combinaciones = op.unario ? [[true],[false]] : [[true,true],[true,false],[false,true],[false,false]];
+  filasLogicaActuales = combinaciones.map(function(c){
+    var resultado = op.unario ? op.evaluar(c[0]) : op.evaluar(c[0], c[1]);
+    return { valores:c, correcta:resultado };
+  });
+  respuestasUsuarioLogica = filasLogicaActuales.map(function(){ return null; });
+
+  var encabezado = op.unario ? '<tr><th>p</th><th>Resultado</th></tr>' : '<tr><th>p</th><th>q</th><th>Resultado</th></tr>';
+  var filasHtml = '';
+  filasLogicaActuales.forEach(function(fila, i){
+    var celdas = fila.valores.map(function(v){ return '<td>' + (v ? 'V' : 'F') + '</td>'; }).join('');
+    filasHtml += '<tr id="fila-logica-' + i + '">' + celdas +
+      '<td class="celda-respuesta">' +
+      '<button class="btn-vf" onclick="responderLogica(' + i + ', true)" id="btn-v-' + i + '">V</button>' +
+      '<button class="btn-vf" onclick="responderLogica(' + i + ', false)" id="btn-f-' + i + '">F</button>' +
+      '</td></tr>';
+  });
+  document.getElementById('tabla-logica').innerHTML = encabezado + filasHtml;
+  document.getElementById('logica-resultado').textContent = '';
+}
+
+function responderLogica(fila, valor){
+  respuestasUsuarioLogica[fila] = valor;
+  document.getElementById('btn-v-' + fila).classList.toggle('activo', valor === true);
+  document.getElementById('btn-f-' + fila).classList.toggle('activo', valor === false);
+}
+
+function verificarTablaLogica(){
+  var correctas = 0;
+  filasLogicaActuales.forEach(function(fila, i){
+    var fil = document.getElementById('fila-logica-' + i);
+    fil.classList.remove('fila-correcta','fila-incorrecta');
+    if(respuestasUsuarioLogica[i] === null){ return; }
+    if(respuestasUsuarioLogica[i] === fila.correcta){
+      correctas++;
+      fil.classList.add('fila-correcta');
+    } else {
+      fil.classList.add('fila-incorrecta');
+    }
+  });
+  var totalRespondidas = respuestasUsuarioLogica.filter(function(r){ return r !== null; }).length;
+  document.getElementById('logica-resultado').textContent =
+    'Respondiste ' + totalRespondidas + ' de ' + filasLogicaActuales.length + ' filas. Correctas: ' + correctas + ' de ' + filasLogicaActuales.length + '.';
+}
+
+function mostrarRespuestasLogica(){
+  filasLogicaActuales.forEach(function(fila, i){
+    document.getElementById('btn-v-' + i).classList.toggle('activo', fila.correcta === true);
+    document.getElementById('btn-f-' + i).classList.toggle('activo', fila.correcta === false);
+    document.getElementById('fila-logica-' + i).classList.add('fila-correcta');
+    document.getElementById('fila-logica-' + i).classList.remove('fila-incorrecta');
+  });
+  respuestasUsuarioLogica = filasLogicaActuales.map(function(f){ return f.correcta; });
+  document.getElementById('logica-resultado').textContent = 'Se muestran las respuestas correctas.';
+}
+
+/* ============ 2.2 ALGORITMOS Y PSEUDOCODIGO ============ */
+var pasosTrazado = [];
+var indicePaso = -1;
+
+function parsearLista(texto){
+  return texto.split(',').map(function(s){ return parseFloat(s.trim()); }).filter(function(n){ return !isNaN(n); });
+}
+
+function generarPasos(numeros){
+  var pasos = [];
+  var mayor = numeros[0];
+  pasos.push({ linea:'linea-mayor-init', desc:'Se inicializa mayor = lista[0] = ' + mayor + '.', fila:null });
+  for(var i = 1; i < numeros.length; i++){
+    var n = numeros[i];
+    pasos.push({ linea:'linea-leer-n', desc:'Se toma el siguiente elemento: n = lista[' + i + '] = ' + n + '.', fila:null });
+    var cmp = n > mayor;
+    pasos.push({ linea:'linea-comparar', desc:'¿' + n + ' > ' + mayor + '? → ' + (cmp ? 'Verdadero' : 'Falso') + '.', fila:null });
+    var mayorAntes = mayor;
+    if(cmp){ mayor = n; }
+    pasos.push({
+      linea:'linea-actualizar',
+      desc: cmp ? ('Como la condición es verdadera, se actualiza: mayor ← ' + n + '.') : ('Como la condición es falsa, mayor no cambia (sigue siendo ' + mayor + ').'),
+      fila:{ i:i, n:n, mayorAntes:mayorAntes, cmp:cmp, mayorDespues:mayor }
+    });
+  }
+  pasos.push({ linea:'linea-final', desc:'Fin del recorrido. El algoritmo entrega: mayor = ' + mayor + '.', fila:null, final:true });
+  return pasos;
+}
+
+function iniciarTrazado(){
+  var numeros = parsearLista(document.getElementById('input-lista').value);
+  if(numeros.length < 2){
+    document.getElementById('estado-actual').textContent = 'Ingresa al menos dos números separados por comas.';
+    return;
+  }
+  pasosTrazado = generarPasos(numeros);
+  indicePaso = -1;
+  document.getElementById('tabla-trazado-body').innerHTML = '';
+  document.querySelectorAll('.pseudocodigo .linea').forEach(function(l){ l.classList.remove('linea-activa'); });
+  document.getElementById('estado-actual').classList.remove('callout-final');
+  siguientePaso();
+}
+
+function siguientePaso(){
+  if(pasosTrazado.length === 0){
+    document.getElementById('estado-actual').textContent = 'Primero pulsa "Iniciar trazado".';
+    return;
+  }
+  if(indicePaso >= pasosTrazado.length - 1){
+    document.getElementById('estado-actual').textContent = 'El trazado ya finalizó. Pulsa "Reiniciar" para repetirlo con otros valores.';
+    return;
+  }
+  indicePaso++;
+  var paso = pasosTrazado[indicePaso];
+  document.querySelectorAll('.pseudocodigo .linea').forEach(function(l){ l.classList.remove('linea-activa'); });
+  var lineaEl = document.getElementById(paso.linea);
+  if(lineaEl){ lineaEl.classList.add('linea-activa'); }
+  document.getElementById('estado-actual').textContent = paso.desc;
+  if(paso.fila){
+    var f = paso.fila;
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + f.i + '</td><td>' + f.n + '</td><td>' + f.mayorAntes + '</td><td>' + (f.cmp ? 'Sí' : 'No') + '</td><td>' + f.mayorDespues + '</td>';
+    document.getElementById('tabla-trazado-body').appendChild(tr);
+  }
+  if(paso.final){
+    document.getElementById('estado-actual').classList.add('callout-final');
+  }
+}
+
+function reiniciarTrazado(){
+  pasosTrazado = [];
+  indicePaso = -1;
+  document.getElementById('tabla-trazado-body').innerHTML = '';
+  document.querySelectorAll('.pseudocodigo .linea').forEach(function(l){ l.classList.remove('linea-activa'); });
+  document.getElementById('estado-actual').classList.remove('callout-final');
+  document.getElementById('estado-actual').textContent = 'Pulsa "Iniciar trazado" para comenzar.';
+}
+
+/* ============ 2.3 DIAGRAMAS DE FLUJO ============ */
+var simboloSeleccionado = null;
+var emparejados = 0;
+
+function seleccionarSimbolo(id){
+  var card = document.getElementById('simbolo-' + id);
+  if(card.classList.contains('emparejado')) return;
+  document.querySelectorAll('.df-card').forEach(function(c){ c.classList.remove('seleccionado'); });
+  simboloSeleccionado = id;
+  card.classList.add('seleccionado');
+}
+
+function intentarEmparejar(el, forId){
+  if(!simboloSeleccionado) return;
+  if(el.classList.contains('emparejado')) return;
+  var cardSeleccionada = document.getElementById('simbolo-' + simboloSeleccionado);
+  if(forId === simboloSeleccionado){
+    el.classList.add('emparejado');
+    cardSeleccionada.classList.add('emparejado');
+    cardSeleccionada.classList.remove('seleccionado');
+    emparejados++;
+    simboloSeleccionado = null;
+    document.getElementById('df-progreso').textContent = 'Emparejados: ' + emparejados + ' de 5';
+    if(emparejados === 5){
+      document.getElementById('df-mensaje-final').style.display = 'block';
+    }
+  } else {
+    el.classList.add('error');
+    cardSeleccionada.classList.add('error');
+    var seleccionPrevia = simboloSeleccionado;
+    simboloSeleccionado = null;
+    setTimeout(function(){
+      el.classList.remove('error');
+      var c = document.getElementById('simbolo-' + seleccionPrevia);
+      if(c){ c.classList.remove('error','seleccionado'); }
+    }, 600);
+  }
+}
+
+function reiniciarDiagramas(){
+  document.querySelectorAll('.df-card').forEach(function(c){ c.classList.remove('emparejado','seleccionado','error'); });
+  document.querySelectorAll('.df-meaning').forEach(function(c){ c.classList.remove('emparejado','error'); });
+  simboloSeleccionado = null;
+  emparejados = 0;
+  document.getElementById('df-progreso').textContent = 'Emparejados: 0 de 5';
+  document.getElementById('df-mensaje-final').style.display = 'none';
+}
+
+/* ============ 5. PRACTICA (QUIZ) ============ */
+var bancoPreguntas = [
+  { pregunta:"¿Cuál es la definición más precisa de un algoritmo?",
+    opciones:["Un conjunto finito y ordenado de pasos para resolver un problema.","Una lista de nombres de variables usadas en un programa.","Un diagrama que solo se usa para representar bases de datos.","Un lenguaje de programación específico como Python o Java."],
+    correcta:0, explicacion:"Un algoritmo es, por definición, una secuencia finita y ordenada de pasos que resuelve un problema." },
+  { pregunta:"La lógica proposicional estudia principalmente:",
+    opciones:["La velocidad de ejecución de un algoritmo.","El valor de verdad de enunciados y cómo se combinan mediante operadores lógicos.","La sintaxis de los lenguajes de programación.","El diseño gráfico de interfaces de usuario."],
+    correcta:1, explicacion:"La lógica proposicional analiza proposiciones (verdaderas o falsas) y sus combinaciones mediante operadores como AND, OR y NOT." },
+  { pregunta:"El operador lógico AND (∧) entre dos proposiciones p y q es verdadero cuando:",
+    opciones:["Al menos una de las dos es verdadera.","Ninguna de las dos es verdadera.","Ambas p y q son verdaderas.","Solamente p es verdadera."],
+    correcta:2, explicacion:"La conjunción (AND) solo es verdadera cuando ambas proposiciones son verdaderas simultáneamente." },
+  { pregunta:"El operador OR (∨) es falso únicamente cuando:",
+    opciones:["p es verdadera y q es falsa.","p es falsa y q es verdadera.","Ambas son verdaderas.","Ambas proposiciones son falsas."],
+    correcta:3, explicacion:"La disyunción (OR) solo es falsa cuando ambas proposiciones son falsas; en cualquier otro caso es verdadera." },
+  { pregunta:"En un diagrama de flujo, el símbolo de rombo representa:",
+    opciones:["Una decisión o condición.","El inicio del algoritmo.","Una entrada de datos.","Un proceso de cálculo."],
+    correcta:0, explicacion:"El rombo se utiliza siempre para representar una decisión o evaluación de una condición." },
+  { pregunta:"En un diagrama de flujo, el óvalo representa:",
+    opciones:["Una decisión.","El inicio o el fin del algoritmo.","Un proceso.","Una conexión entre páginas."],
+    correcta:1, explicacion:"El óvalo (o elipse) marca el punto de inicio o de finalización de un diagrama de flujo." },
+  { pregunta:"La estructura de control que repite un bloque de instrucciones mientras se cumple una condición se llama:",
+    opciones:["Estructura secuencial.","Estructura de entrada/salida.","Estructura repetitiva o iterativa (bucle).","Estructura de declaración de variables."],
+    correcta:2, explicacion:"Las estructuras repetitivas (bucles como Para o Mientras) ejecutan un bloque de instrucciones varias veces." },
+  { pregunta:'En el pseudocódigo, la instrucción "Si... entonces... Fin Si" corresponde a una estructura de:',
+    opciones:["Repetición.","Entrada de datos.","Secuencia simple.","Selección o decisión."],
+    correcta:3, explicacion:'La instrucción "Si...entonces" es el ejemplo clásico de una estructura de selección o decisión.' },
+  { pregunta:"Analizar la complejidad de un algoritmo (por ejemplo, con notación Big-O) permite principalmente:",
+    opciones:["Estimar qué tan eficiente es un algoritmo según el tamaño de los datos.","Determinar el lenguaje de programación que se debe usar.","Decidir el color de la interfaz gráfica del programa.","Calcular el costo monetario exacto del software."],
+    correcta:0, explicacion:"La notación Big-O mide cómo crece el tiempo o los recursos que usa un algoritmo a medida que aumentan los datos de entrada." },
+  { pregunta:"¿Cuál de las siguientes es una aplicación práctica directa del análisis lógico y algorítmico?",
+    opciones:["Elegir la tipografía de un documento de texto.","El diseño de consultas en bases de datos y sistemas de inteligencia artificial.","Medir la temperatura ambiente de una habitación.","Pintar las paredes de un centro de datos."],
+    correcta:1, explicacion:"Las consultas a bases de datos y los sistemas de inteligencia artificial se construyen sobre lógica y algoritmos." },
+  { pregunta:"Comparado con una búsqueda secuencial, una búsqueda binaria en una lista ordenada es más eficiente porque:",
+    opciones:["Revisa todos los elementos sin excepción.","Solo funciona cuando la lista tiene un elemento.","Descarta la mitad de los elementos restantes en cada comparación.","Ordena la lista nuevamente en cada paso."],
+    correcta:2, explicacion:"La búsqueda binaria reduce el espacio de búsqueda a la mitad en cada paso, por eso es mucho más rápida en listas grandes." },
+  { pregunta:"El principal impacto del análisis lógico y algorítmico en la innovación tecnológica es:",
+    opciones:["Aumentar el tamaño físico de los computadores.","Reducir la necesidad de programadores en el futuro cercano.","Eliminar por completo la necesidad de pruebas de software.","Permitir crear soluciones más eficientes que optimizan tiempo, recursos y toma de decisiones."],
+    correcta:3, explicacion:"El análisis lógico y algorítmico impulsa la innovación al permitir soluciones más eficientes en tiempo, recursos y toma de decisiones." }
+];
+
+var ordenPreguntas = [];
+var indicePregunta = 0;
+var puntaje = 0;
+var respondidoActual = false;
+
+function barajar(array){
+  var copia = array.slice();
+  for(var i = copia.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = copia[i]; copia[i] = copia[j]; copia[j] = tmp;
+  }
+  return copia;
+}
+
+function iniciarPractica(){
+  ordenPreguntas = barajar(bancoPreguntas.map(function(_, i){ return i; }));
+  indicePregunta = 0;
+  puntaje = 0;
+  document.getElementById('quiz-final').style.display = 'none';
+  document.getElementById('quiz-progreso').style.display = 'block';
+  document.getElementById('quiz-pregunta').style.display = 'block';
+  document.getElementById('quiz-opciones').style.display = 'grid';
+  mostrarPregunta();
+}
+
+function mostrarPregunta(){
+  respondidoActual = false;
+  document.getElementById('btn-siguiente-pregunta').disabled = true;
+  document.getElementById('quiz-feedback').textContent = '';
+  document.getElementById('quiz-feedback').className = '';
+  var idxReal = ordenPreguntas[indicePregunta];
+  var preg = bancoPreguntas[idxReal];
+  document.getElementById('quiz-progreso').textContent = 'Pregunta ' + (indicePregunta + 1) + ' de ' + ordenPreguntas.length + ' — Puntaje: ' + puntaje;
+  document.getElementById('quiz-pregunta').textContent = preg.pregunta;
+  var contenedor = document.getElementById('quiz-opciones');
+  contenedor.innerHTML = '';
+  preg.opciones.forEach(function(op, i){
+    var btn = document.createElement('button');
+    btn.className = 'opcion-quiz';
+    btn.textContent = String.fromCharCode(65 + i) + ') ' + op;
+    btn.onclick = function(){ responderQuiz(i); };
+    contenedor.appendChild(btn);
+  });
+}
+
+function responderQuiz(seleccion){
+  if(respondidoActual) return;
+  respondidoActual = true;
+  var idxReal = ordenPreguntas[indicePregunta];
+  var preg = bancoPreguntas[idxReal];
+  var botones = document.querySelectorAll('#quiz-opciones .opcion-quiz');
+  botones.forEach(function(b, i){
+    b.disabled = true;
+    if(i === preg.correcta){ b.classList.add('opcion-correcta'); }
+    else if(i === seleccion){ b.classList.add('opcion-incorrecta'); }
+  });
+  var feedback = document.getElementById('quiz-feedback');
+  if(seleccion === preg.correcta){
+    puntaje++;
+    feedback.textContent = 'Correcto. ' + preg.explicacion;
+    feedback.className = 'feedback-correcto';
+  } else {
+    feedback.textContent = 'No es correcto. ' + preg.explicacion;
+    feedback.className = 'feedback-incorrecto';
+  }
+  document.getElementById('quiz-progreso').textContent = 'Pregunta ' + (indicePregunta + 1) + ' de ' + ordenPreguntas.length + ' — Puntaje: ' + puntaje;
+  document.getElementById('btn-siguiente-pregunta').disabled = false;
+}
+
+function siguientePregunta(){
+  if(!respondidoActual) return;
+  indicePregunta++;
+  if(indicePregunta >= ordenPreguntas.length){
+    mostrarResultadoFinal();
+    return;
+  }
+  mostrarPregunta();
+}
+
+function mostrarResultadoFinal(){
+  document.getElementById('quiz-progreso').style.display = 'none';
+  document.getElementById('quiz-pregunta').style.display = 'none';
+  document.getElementById('quiz-opciones').style.display = 'none';
+  document.getElementById('quiz-feedback').textContent = '';
+  document.getElementById('btn-siguiente-pregunta').disabled = true;
+  var total = ordenPreguntas.length;
+  var porcentaje = Math.round((puntaje / total) * 100);
+  var mensaje;
+  if(porcentaje >= 80){ mensaje = 'Excelente dominio del tema.'; }
+  else if(porcentaje >= 60){ mensaje = 'Buen resultado; repasa los temas con menor puntaje.'; }
+  else { mensaje = 'Te recomendamos repasar nuevamente la sección de Componentes Clave antes de continuar.'; }
+  var final = document.getElementById('quiz-final');
+  final.style.display = 'block';
+  final.innerHTML = '<strong>Resultado final:</strong> ' + puntaje + ' de ' + total + ' respuestas correctas (' + porcentaje + '%).<br>' + mensaje;
+}
+
+/* ============ INICIALIZACION ============ */
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('selector-operador').value = 'AND';
+  renderTablaLogica('AND');
+  iniciarPractica();
+});
+</script>
+
+</body>
+</html>
